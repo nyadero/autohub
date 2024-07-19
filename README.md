@@ -24,4 +24,4 @@ using this project for learning purposes. ie caching with redis, messaging with 
 - [ ] Write unit tests
 - [ ] Write documentation for the api
 - [ ] Configure CI/CD pipeline
-- [ ] Deploy the api# autohub
+- [ ] Deploy the api autohub
