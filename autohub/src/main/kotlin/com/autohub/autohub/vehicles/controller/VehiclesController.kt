@@ -1,5 +1,6 @@
 package com.autohub.autohub.vehicles.controller
 
+import com.autohub.autohub.configuration.responses.ApiResponse
 import com.autohub.autohub.vehicles.dto.VehicleDto
 import com.autohub.autohub.vehicles.entity.Vehicle
 import com.autohub.autohub.vehicles.service.VehiclesService
@@ -26,7 +27,7 @@ class VehiclesController(
     @PostMapping("")
     fun addVehicle(
         @ModelAttribute vehicleDto: VehicleDto
-    ): ResponseEntity<Vehicle?>{
+    ): ResponseEntity<ApiResponse<Vehicle>>{
         println(vehicleDto.model)
         return vehiclesService.addVehicle(vehicleDto)
     }
@@ -35,7 +36,7 @@ class VehiclesController(
     @GetMapping("")
     fun allVehicles(
         @RequestParam(name = "pageNumber", defaultValue = "0")  pageNumber: Int
-    ): ResponseEntity<List<Vehicle>> {
+    ): ResponseEntity<ApiResponse<List<Vehicle>>> {
         return vehiclesService.allVehicles(pageNumber)
     }
 
@@ -43,7 +44,7 @@ class VehiclesController(
     @GetMapping("/{id}")
     fun vehicleById(
         @PathVariable("id") id: String
-    ): ResponseEntity<Vehicle>{
+    ): ResponseEntity<ApiResponse<Vehicle>>{
         return vehiclesService.vehicleById(id)
     }
 
@@ -52,7 +53,7 @@ class VehiclesController(
     fun updateVehicle(
         @PathVariable("id") id: String,
         @RequestBody vehicleDto: VehicleDto
-    ): ResponseEntity<Vehicle>{
+    ): ResponseEntity<ApiResponse<Vehicle>>{
         return vehiclesService.updateVehicle(id, vehicleDto)
     }
 
@@ -60,18 +61,15 @@ class VehiclesController(
     @GetMapping("/search")
     fun searchVehicles(
         @RequestParam(name = "query") query: String
-    ): ResponseEntity<List<Vehicle>>{
+    ): ResponseEntity<ApiResponse<List<Vehicle>>>{
         return vehiclesService.searchVehicles(query)
     }
-
-
-
 
     // delete vehicle
     @DeleteMapping("/{id}")
     fun deleteVehicle(
         @PathVariable("id") id: String
-    ): ResponseEntity<String>{
+    ): ResponseEntity<ApiResponse<String>>{
         return vehiclesService.deleteVehicle(id)
     }
 
