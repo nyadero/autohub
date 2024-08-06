@@ -1,6 +1,7 @@
 package com.autohub.autohub.vehicles.entity
 
 import com.autohub.autohub.autohubfiles.entity.AutohubFile
+import com.autohub.autohub.comments.entity.Comment
 import com.autohub.autohub.vehicles.enums.DriveTrain
 import com.autohub.autohub.vehicles.enums.EngineAspiration
 import com.autohub.autohub.vehicles.enums.EngineLayout
@@ -63,6 +64,10 @@ data class Vehicle(
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "vehicle")
     @JsonManagedReference(value = "vehicle-files")
     var files: List<AutohubFile>? = null,
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "vehicle")
+    @JsonManagedReference(value = "vehicle-comments")
+    val comments: List<Comment>? = null,
 
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
