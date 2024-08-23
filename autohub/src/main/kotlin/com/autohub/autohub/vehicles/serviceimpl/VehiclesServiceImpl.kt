@@ -19,6 +19,9 @@ import com.autohub.autohub.vehicles.events.VehicleEvent
 import com.autohub.autohub.vehicles.repository.VehicleRepository
 import com.autohub.autohub.vehicles.service.VehiclesService
 import io.jsonwebtoken.io.IOException
+import org.springframework.boot.actuate.autoconfigure.wavefront.WavefrontProperties
+import org.springframework.boot.system.ApplicationHome
+import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -45,15 +48,15 @@ class VehiclesServiceImpl(
     }
 
     // all vehicles
-    override fun allVehicles(pageNumber: Int): ResponseEntity<ApiResponse<List<Vehicle>>> {
+    override fun allVehicles(pageNumber: Int): List<Vehicle> {
         val sort: Sort = Sort.by(Sort.Direction.DESC, "createdAt")
         val pageRequest: PageRequest = PageRequest.of(pageNumber, PAGE_SIZE, sort)
         val page: List<Vehicle> = vehicleRepository.findAll(sort)
-        return ResponseEntity.ok(ApiResponse(data = Data(page), "Found ", ResponseType.Success))
+        return page
     }
 
     // add vehicle
-    override fun addVehicle(vehicleDto: VehicleDto): ResponseEntity<ApiResponse<Vehicle>> {
+    override fun addVehicle(vehicleDto: VehicleDto): Vehicle {
         println("saving vehicle")
         var vehicle: Vehicle = Vehicle(
             name = vehicleDto.name,
@@ -72,22 +75,22 @@ class VehiclesServiceImpl(
         println(vehicleDto)
         val saved: Vehicle = vehicleRepository.save(vehicle)
         applicationEventPublisher.publishEvent(AutohubFileEvent(saved, vehicleDto.files, FileEventType.Upload))
-        return ResponseEntity.ok(ApiResponse(Data(vehicle), "Vehicle added", ResponseType.Success))
+        return vehicle
     }
 
     // vehicle by id
-    override fun vehicleById(id: String): ResponseEntity<ApiResponse<Vehicle>> {
+    override fun vehicleById(id: String): Vehicle {
         val vehicle: Vehicle = vehicleRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Vehicle not found") }
         applicationEventPublisher.publishEvent(VehicleEvent(vehicle, vehicle.name))
-        return ResponseEntity.ok(ApiResponse(Data(vehicle), "Vehicle fetched", ResponseType.Success))
+        return vehicle
     }
 
     // update vehicle
     override fun updateVehicle(
         id: String,
         vehicleDto: VehicleDto
-    ): ResponseEntity<ApiResponse<Vehicle>> {
+    ): Vehicle {
         val vehicle: Vehicle = vehicleRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Vehicle not found") }
         vehicle.name = vehicleDto.name
@@ -103,23 +106,22 @@ class VehiclesServiceImpl(
         vehicle.description = vehicleDto.description
         vehicle.driveTrain = DriveTrain.valueOf(vehicleDto.driveTrain)
         val saved: Vehicle = vehicleRepository.save(vehicle)
-        return ResponseEntity.ok(ApiResponse(Data(saved), "Vehicle updated", ResponseType.Success))
+        return saved
     }
 
     // search vehicles
-    override fun searchVehicles(query: String): ResponseEntity<ApiResponse<List<Vehicle>>> {
+    override fun searchVehicles(query: String): List<Vehicle> {
         val vehicles: List<Vehicle> = vehicleRepository.findAllByNameContainingIgnoreCase(query)
-        return ResponseEntity.ok(ApiResponse(Data(vehicles), "Found ${vehicles.size} vehicles", ResponseType.Success))
+        return vehicles
     }
 
 
     // delete vehicle
-    override fun deleteVehicle(id: String): ResponseEntity<ApiResponse<String>> {
+    override fun deleteVehicle(id: String): Unit {
         val vehicle: Vehicle? = vehicleRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Vehicle not found") }
         vehicleRepository.delete(vehicle!!)
         applicationEventPublisher.publishEvent(AutohubFileEvent(vehicle!!, null, FileEventType.Delete))
-        return ResponseEntity.ok(ApiResponse(null, "Vehicle deleted", ResponseType.Success))
     }
 
 }
