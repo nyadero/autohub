@@ -16,17 +16,13 @@ import org.springframework.security.web.SecurityFilterChain
 class WebSecurityConfig {
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder{
-        return BCryptPasswordEncoder(10)
-    }
-
-    @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/v1/vehicles/**").permitAll()
                     .requestMatchers("/api/v1/comments/**").permitAll()
+                    .requestMatchers("/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement { session ->
