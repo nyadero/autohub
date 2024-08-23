@@ -3,7 +3,7 @@ create table if not exists users(
   name  varchar(255) not null unique,
   email  varchar(255) not null unique,
   u_password varchar(255) not null unique,
-  is_enabled boolean default false,
+  enabled boolean default false,
   role varchar(255) default USER,
   created_at timestamp(6),
   updated_at timestamp(6),
