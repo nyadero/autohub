@@ -9,9 +9,9 @@ interface CommentService {
     fun addVehicleComment(
         vehicleId: String,
         commentDto: CommentDto
-    ): ResponseEntity<ApiResponse<Comment>>
+    ): Comment
 
-    fun deleteVehicleComment(commentId: String): ResponseEntity<ApiResponse<Void>>
+    fun deleteVehicleComment(commentId: String)
 
-    fun vehicleComments(vehicleId: String): ResponseEntity<ApiResponse<List<Comment>>>
+    fun vehicleComments(vehicleId: String): List<Comment>
 }
