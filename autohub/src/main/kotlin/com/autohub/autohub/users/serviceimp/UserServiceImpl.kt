@@ -1,6 +1,6 @@
 package com.autohub.autohub.users.serviceimp
 
-import com.autohub.autohub.users.entity.User
+import com.autohub.autohub.auth.entity.User
 import com.autohub.autohub.users.repository.UserRepository
 import com.autohub.autohub.users.service.UserService
 import org.springframework.data.domain.Page
